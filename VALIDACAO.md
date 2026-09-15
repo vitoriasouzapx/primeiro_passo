@@ -1,8 +1,9 @@
-# Validação da versão 0.5.4
+# Validação v0.5.5
 
-- Dependências Flutter instaladas e pubspec.lock incluído.
-- Análise Dart concluída sem erros nem warnings; 10 avisos informativos de APIs antigas (withOpacity e value de dropdown) permanecem no projeto.
-- Quatro testes do servidor passaram: paginação e lista vazia; autorização e entrada inválida; atualização e desativação; funcionamento sem chave de IA e CORS.
-- Quatro testes Flutter passaram: IDs distintos e persistência da meta; falha de atualização com preservação da lista; rejeição de URL/requisitos inválidos; abertura da tela de vagas com Material e busca por empresa.
+Análise Dart concluída sem erros e sem warnings. Permanecem 10 avisos informativos de APIs antigas já usadas no projeto.
 
-Os testes usam dados fictícios e banco temporário. Não foi conectada nenhuma empresa real. Não foi gerado APK nem feita implantação na internet. O teste de interface executa a tela no ambiente de testes Flutter; não representa uma revisão visual de todas as telas ou testes em aparelhos físicos.
+A suíte Flutter verifica os seis destinos da jornada, o atalho de Descoberta na página inicial, a persistência independente das atividades e a leitura dos perfis antigos. Também inclui os quatro testes da integração de vagas da v0.5.4.
+
+Não foi gerado APK nem realizada implantação na internet. Os testes de interface executam widgets Flutter, não substituem a revisão completa em aparelhos físicos. Os percentuais gerais da jornada mantêm as regras anteriores.
+Ajustados também os espaços verticais dos cartões da página inicial para acomodar o conteúdo sem transbordamento.
+Resultado final: 12 testes Flutter aprovados.

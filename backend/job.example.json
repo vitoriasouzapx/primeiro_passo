@@ -1,0 +1,10 @@
+{
+  "title": "Assistente Administrativo",
+  "company": "Empresa Exemplo",
+  "location": "Fortaleza, CE",
+  "modality": "Híbrido",
+  "description": "Exemplo fictício para testar o cadastro. Substitua pelos dados autorizados da empresa.",
+  "requirements": {"Excel": 0.65, "Organização": 0.75},
+  "application_url": "https://example.com/vagas/001",
+  "active": true
+}
