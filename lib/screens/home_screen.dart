@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../services/app_controller.dart';
 import '../widgets/ui.dart';
+import '../widgets/cycle_progress.dart';
 import 'human_work_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -163,21 +164,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 11),
-                Row(
-                  children: [
-                    Expanded(child: ProgressLine(value: compatibility)),
-                    const SizedBox(width: 10),
-                    Text(
-                      '${(compatibility * 100).round()}%',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 16,
-                        color: ink,
-                      ),
-                    ),
-                  ],
-                ),
+                const SizedBox(height: 10),
+                CycleProgress(value: compatibility),
               ],
             ),
           ),
@@ -631,4 +619,3 @@ class _JourneyTile extends StatelessWidget {
     );
   }
 }
-
