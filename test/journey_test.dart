@@ -34,7 +34,7 @@ void main() {
   const routes = {
     '1. Descoberta': 'Interesses e rotina de trabalho',
     '2. Capacitação': 'Lacunas detectadas automaticamente',
-    '3. Currículo inteligente': 'Currículo inteligente',
+    '3. Currículo inteligente': 'Meu currículo',
     '4. Busca e seleção': 'Faça uma busca com critérios',
     '5. Entrada e adaptação': 'Antes do primeiro dia',
     '6. Desenvolvimento': 'Observe sua atuação atual',

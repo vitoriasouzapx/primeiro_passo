@@ -39,19 +39,71 @@ class _AppShellState extends State<AppShell> {
 
     return Scaffold(
       backgroundColor: bg,
-      body: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 480),
-          color: Colors.white,
-          child: Column(
-            children: [
-              Expanded(
-                child: IndexedStack(index: index, children: pages),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final wide = constraints.maxWidth >= 760 && constraints.maxHeight >= 480;
+          final content = Center(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 1040),
+              color: Colors.white,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: IndexedStack(index: index, children: pages),
+                  ),
+                  if (!wide)
+                    SafeArea(
+                      top: false,
+                      child: _BottomNav(index: index, onChanged: go),
+                    ),
+                ],
               ),
-              _BottomNav(index: index, onChanged: go),
+            ),
+          );
+          if (!wide) return content;
+          return Row(
+            children: [
+              SafeArea(
+                child: NavigationRail(
+                  selectedIndex: index,
+                  onDestinationSelected: go,
+                  extended: constraints.maxWidth >= 1180,
+                  labelType: constraints.maxWidth >= 1180
+                      ? NavigationRailLabelType.none
+                      : NavigationRailLabelType.all,
+                  leading: const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Icon(Icons.spa_rounded, color: purple, size: 32),
+                  ),
+                  destinations: const [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.home_rounded),
+                      label: Text('Início'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.menu_book_rounded),
+                      label: Text('Trilhas'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.chat_bubble_outline_rounded),
+                      label: Text('Assistente'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.search_rounded),
+                      label: Text('Vagas'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.person_outline_rounded),
+                      label: Text('Perfil'),
+                    ),
+                  ],
+                ),
+              ),
+              const VerticalDivider(width: 1),
+              Expanded(child: content),
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -106,8 +158,9 @@ class _BottomNav extends StatelessWidget {
                       items[i].$2,
                       style: TextStyle(
                         fontSize: 10.5,
-                        fontWeight:
-                            selected ? FontWeight.w800 : FontWeight.w500,
+                        fontWeight: selected
+                            ? FontWeight.w800
+                            : FontWeight.w500,
                         color: selected ? purple : muted,
                       ),
                     ),

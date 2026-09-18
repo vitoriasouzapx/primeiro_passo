@@ -106,9 +106,9 @@ class AppController extends ChangeNotifier {
       case 'resume':
         return ([
                   p.professionalSummary.isNotEmpty,
-                  p.education.isNotEmpty,
-                  p.completedCourses.isNotEmpty,
-                  p.skills.isNotEmpty,
+                  p.education.isNotEmpty || (p.resume['education'] as List? ?? []).isNotEmpty,
+                  p.completedCourses.isNotEmpty || (p.resume['courses'] as List? ?? []).isNotEmpty,
+                  p.skills.isNotEmpty || (p.resume['technical'] as List? ?? []).isNotEmpty || (p.resume['behavioral'] as List? ?? []).isNotEmpty,
                   p.targetRole.isNotEmpty,
                 ].where((x) => x).length /
                 5)

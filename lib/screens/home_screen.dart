@@ -1,4 +1,5 @@
 import 'journey_routes.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,8 +18,9 @@ class HomeScreen extends StatelessWidget {
     final p = c.profile;
     final recommendations = c.engine.recommend(p);
     final compatibility = c.engine.compatibility(p);
-    final firstName =
-        p.name.trim().isEmpty ? 'Você' : p.name.trim().split(' ').first;
+    final firstName = p.name.trim().isEmpty
+        ? 'Você'
+        : p.name.trim().split(' ').first;
 
     return SafeArea(
       bottom: false,
@@ -170,48 +172,45 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: MiniStatCard(
-                  icon: Icons.school_rounded,
-                  color: const Color(0xFF009E74),
-                  background: greenSoft,
-                  value: '${p.completedCourses.length}',
-                  label: 'Cursos\nconcluídos',
-                ),
-              ),
-              const SizedBox(width: 7),
-              Expanded(
-                child: MiniStatCard(
-                  icon: Icons.description_outlined,
-                  color: const Color(0xFF2478E5),
-                  background: blueSoft,
-                  value: '${p.applications.length}',
-                  label: 'Candidaturas\nenviadas',
-                ),
-              ),
-              const SizedBox(width: 7),
-              Expanded(
-                child: MiniStatCard(
-                  icon: Icons.groups_rounded,
-                  color: const Color(0xFFE46823),
-                  background: orangeSoft,
-                  value: '${p.interviews.length}',
-                  label: 'Entrevistas\nregistradas',
-                ),
-              ),
-              const SizedBox(width: 7),
-              Expanded(
-                child: MiniStatCard(
-                  icon: Icons.trending_up_rounded,
-                  color: purple,
-                  background: purpleSoft,
-                  value: '${(compatibility * 100).round()}%',
-                  label: 'Compatibilidade\ncom a meta',
-                ),
-              ),
-            ],
+          LayoutBuilder(
+            builder: (context, box) {
+              final columns = box.maxWidth >= 720 ? 4 : 2;
+              final width = (box.maxWidth - 12 * (columns - 1)) / columns;
+              return Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  MiniStatCard(
+                    icon: Icons.school_rounded,
+                    color: const Color(0xFF009E74),
+                    background: greenSoft,
+                    value: '${p.completedCourses.length}',
+                    label: 'Cursos\nconcluídos',
+                  ),
+                  MiniStatCard(
+                    icon: Icons.description_outlined,
+                    color: const Color(0xFF2478E5),
+                    background: blueSoft,
+                    value: '${p.applications.length}',
+                    label: 'Candidaturas\nenviadas',
+                  ),
+                  MiniStatCard(
+                    icon: Icons.groups_rounded,
+                    color: const Color(0xFFE46823),
+                    background: orangeSoft,
+                    value: '${p.interviews.length}',
+                    label: 'Entrevistas\nregistradas',
+                  ),
+                  MiniStatCard(
+                    icon: Icons.trending_up_rounded,
+                    color: purple,
+                    background: purpleSoft,
+                    value: '${(compatibility * 100).round()}%',
+                    label: 'Compatibilidade\ncom a meta',
+                  ),
+                ].map((card) => SizedBox(width: width, child: card)).toList(),
+              );
+            },
           ),
           const SizedBox(height: 20),
           SectionTitle(
@@ -224,8 +223,9 @@ class HomeScreen extends StatelessWidget {
             height: 200,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              itemCount:
-                  recommendations.isEmpty ? 1 : recommendations.take(3).length,
+              itemCount: recommendations.isEmpty
+                  ? 1
+                  : recommendations.take(3).length,
               separatorBuilder: (_, __) => const SizedBox(width: 9),
               itemBuilder: (context, i) {
                 if (recommendations.isEmpty) {
@@ -271,47 +271,53 @@ class HomeScreen extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               children: [
                 _JourneyTile(
-                    number: '1',
-                    title: 'Descoberta',
-                    subtitle: 'Conheça seu perfil',
-                    icon: Icons.explore_rounded,
-                    colors: const [Color(0xFF8B5CF6), Color(0xFF7054E8)],
-                    onTap: () => openJourneyStage(context, 'discovery')),
+                  number: '1',
+                  title: 'Descoberta',
+                  subtitle: 'Conheça seu perfil',
+                  icon: Icons.explore_rounded,
+                  colors: const [Color(0xFF8B5CF6), Color(0xFF7054E8)],
+                  onTap: () => openJourneyStage(context, 'discovery'),
+                ),
                 _JourneyTile(
-                    number: '2',
-                    title: 'Capacitação',
-                    subtitle: 'Desenvolva competências',
-                    icon: Icons.school_rounded,
-                    colors: const [Color(0xFF55B9F8), Color(0xFF2688E9)],
-                    onTap: () => openJourneyStage(context, 'training')),
+                  number: '2',
+                  title: 'Capacitação',
+                  subtitle: 'Desenvolva competências',
+                  icon: Icons.school_rounded,
+                  colors: const [Color(0xFF55B9F8), Color(0xFF2688E9)],
+                  onTap: () => openJourneyStage(context, 'training'),
+                ),
                 _JourneyTile(
-                    number: '3',
-                    title: 'Currículo',
-                    subtitle: 'Organize suas experiências',
-                    icon: Icons.fact_check_rounded,
-                    colors: const [Color(0xFF57D4A4), Color(0xFF2CBF85)],
-                    onTap: () => openJourneyStage(context, 'resume')),
+                  number: '3',
+                  title: 'Currículo',
+                  subtitle: 'Organize suas experiências',
+                  icon: Icons.fact_check_rounded,
+                  colors: const [Color(0xFF57D4A4), Color(0xFF2CBF85)],
+                  onTap: () => openJourneyStage(context, 'resume'),
+                ),
                 _JourneyTile(
-                    number: '4',
-                    title: 'Busca e seleção',
-                    subtitle: 'Candidaturas e entrevistas',
-                    icon: Icons.search_rounded,
-                    colors: const [Color(0xFFFFB05F), Color(0xFFF37B27)],
-                    onTap: () => openJourneyStage(context, 'search')),
+                  number: '4',
+                  title: 'Busca e seleção',
+                  subtitle: 'Candidaturas e entrevistas',
+                  icon: Icons.search_rounded,
+                  colors: const [Color(0xFFFFB05F), Color(0xFFF37B27)],
+                  onTap: () => openJourneyStage(context, 'search'),
+                ),
                 _JourneyTile(
-                    number: '5',
-                    title: 'Entrada e adaptação',
-                    subtitle: 'Prepare os primeiros dias',
-                    icon: Icons.work_rounded,
-                    colors: const [Color(0xFFF27695), Color(0xFFE34F76)],
-                    onTap: () => openJourneyStage(context, 'entry')),
+                  number: '5',
+                  title: 'Entrada e adaptação',
+                  subtitle: 'Prepare os primeiros dias',
+                  icon: Icons.work_rounded,
+                  colors: const [Color(0xFFF27695), Color(0xFFE34F76)],
+                  onTap: () => openJourneyStage(context, 'entry'),
+                ),
                 _JourneyTile(
-                    number: '6',
-                    title: 'Desenvolvimento',
-                    subtitle: 'Planeje sua evolução',
-                    icon: Icons.trending_up_rounded,
-                    colors: const [Color(0xFF8B5CF6), Color(0xFF7054E8)],
-                    onTap: () => openJourneyStage(context, 'development')),
+                  number: '6',
+                  title: 'Desenvolvimento',
+                  subtitle: 'Planeje sua evolução',
+                  icon: Icons.trending_up_rounded,
+                  colors: const [Color(0xFF8B5CF6), Color(0xFF7054E8)],
+                  onTap: () => openJourneyStage(context, 'development'),
+                ),
                 _JourneyTile(
                   number: '',
                   title: 'Especial',
@@ -404,142 +410,80 @@ class HomeScreen extends StatelessWidget {
 class _HeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 250,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF5722C9), Color(0xFF7E4FF1), Color(0xFFD06CD3)],
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x306D35E8),
-            blurRadius: 18,
-            offset: Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -25,
-            bottom: -20,
-            child: Icon(
-              Icons.landscape_rounded,
-              size: 210,
-              color: Colors.white.withOpacity(.12),
+    return LayoutBuilder(
+      builder: (context, box) {
+        final narrow = box.maxWidth < 430;
+        final illustration = Image.asset(
+          'assets/images/trilha_profissional.png',
+          height: narrow ? 165 : 220,
+          width: narrow ? 120 : 160,
+          fit: BoxFit.contain,
+          excludeFromSemantics: true,
+        );
+        final copy = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Primeiro Passo',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Do primeiro passo ao primeiro emprego.',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 18),
+            const Text(
+              'Desenvolva suas habilidades, conheça seu potencial e construa um futuro com mais segurança.',
+              style: TextStyle(color: Colors.white, fontSize: 14, height: 1.4),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Disciplina hoje, oportunidades amanhã.',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+        );
+        return Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: const LinearGradient(
+              colors: [Color(0xFF5722C9), Color(0xFF7E4FF1), Color(0xFFAC62C9)],
             ),
           ),
-          Positioned(
-            right: 18,
-            top: 22,
-            child: Column(
-              children: [
-                Icon(
-                  Icons.hiking_rounded,
-                  size: 69,
-                  color: Colors.white.withOpacity(.82),
-                ),
-                const SizedBox(height: 3),
-                const Text(
-                  'Você\nconsegue!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(19),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Row(
+          child: narrow
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.spa_rounded, color: Color(0xFFBDEFFF), size: 42),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        'Primeiro Passo',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 27,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: -.5,
-                        ),
-                      ),
+                    copy,
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: illustration,
                     ),
                   ],
+                )
+              : Row(
+                  children: [
+                    Expanded(child: copy),
+                    const SizedBox(width: 20),
+                    illustration,
+                  ],
                 ),
-                const SizedBox(height: 3),
-                const Padding(
-                  padding: EdgeInsets.only(left: 52),
-                  child: Text(
-                    'Do primeiro passo\nao primeiro emprego.',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      height: 1.2,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                const SizedBox(
-                  width: 250,
-                  child: Text(
-                    'Desenvolva suas habilidades, conheça seu potencial e construa um futuro com mais segurança.',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      height: 1.35,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 11,
-                    vertical: 7,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(.11),
-                    borderRadius: BorderRadius.circular(11),
-                    border: Border.all(color: Colors.white.withOpacity(.32)),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.format_quote_rounded,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        'Disciplina hoje, oportunidades amanhã.',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10.5,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -31,7 +31,7 @@ class AppSurface extends StatelessWidget {
       color: bg,
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 480),
+          constraints: const BoxConstraints(maxWidth: 960),
           color: Colors.white,
           child: Padding(padding: padding, child: child),
         ),

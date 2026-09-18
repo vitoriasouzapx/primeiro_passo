@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../services/app_controller.dart';
 import '../data/catalog.dart';
 import '../widgets/ui.dart';
+import 'resume_builder_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -90,6 +91,11 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
+                FilledButton.icon(
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ResumeBuilderScreen())),
+                  icon: const Icon(Icons.description_outlined),
+                  label: const Text('Meu currículo'),
+                ),
                 const SectionTitle(
                   title: 'Informações principais',
                   icon: Icons.badge_outlined,
@@ -107,6 +113,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
+                  isExpanded: true,
                   key: ValueKey(p.targetRole),
                   value: p.targetRole,
                   decoration: const InputDecoration(

@@ -1,4 +1,5 @@
 class UserProfile {
+  Map<String, dynamic> resume;
   Map<String, String> journeyNotes;
   List<String> journeyActivities;
   String name;
@@ -25,6 +26,7 @@ class UserProfile {
   String currentRole;
 
   UserProfile({
+    Map<String, dynamic>? resume,
     Map<String, String>? journeyNotes,
     List<String>? journeyActivities,
     this.targetJobId = '',
@@ -49,7 +51,8 @@ class UserProfile {
     this.education = '',
     this.professionalSummary = '',
     this.currentRole = '',
-  })  : journeyNotes = journeyNotes ?? {},
+  })  : resume = resume ?? {},
+        journeyNotes = journeyNotes ?? {},
         journeyActivities = journeyActivities ?? [],
         skills = skills ??
             {
@@ -77,6 +80,7 @@ class UserProfile {
         languages = languages ?? [];
 
   Map<String, dynamic> toMap() => {
+        'resume': resume,
         'journeyNotes': journeyNotes,
         'journeyActivities': journeyActivities,
         'name': name,
@@ -103,6 +107,7 @@ class UserProfile {
         'currentRole': currentRole,
       };
   factory UserProfile.fromMap(Map<String, dynamic> m) => UserProfile(
+        resume: Map<String, dynamic>.from(m['resume'] ?? {}),
         journeyNotes: Map<String, String>.from(m['journeyNotes'] ?? {}),
         journeyActivities: List<String>.from(m['journeyActivities'] ?? []),
         targetJobId: m['targetJobId'] as String? ?? '',
