@@ -5,9 +5,13 @@ import '../services/app_controller.dart';
 import '../data/catalog.dart';
 import '../widgets/ui.dart';
 import 'resume_builder_screen.dart';
+import 'journey_screen.dart';
+import 'jobs_screen.dart';
+import 'assistant_screen.dart';
+import '../widgets/brand.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfileDetailsScreen extends StatelessWidget {
+  const ProfileDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +96,10 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 18),
                 FilledButton.icon(
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ResumeBuilderScreen())),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const ResumeBuilderScreen())),
                   icon: const Icon(Icons.description_outlined),
                   label: const Text('Meu currículo'),
                 ),
@@ -333,5 +340,88 @@ class _EventButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final p = context.watch<AppController>().profile;
+    void open(String title, Widget page) => Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) =>
+                Scaffold(appBar: AppBar(title: Text(title)), body: page)));
+    return SafeArea(
+        bottom: false,
+        child: ListView(padding: const EdgeInsets.all(22), children: [
+          const Text('Perfil',
+              style: TextStyle(
+                  fontSize: 28, fontWeight: FontWeight.w800, color: ink)),
+          const SizedBox(height: 26),
+          Center(
+              child: CircleAvatar(
+                  radius: 38,
+                  backgroundColor: purpleSoft,
+                  child: Text(
+                      p.name.isEmpty
+                          ? 'P'
+                          : p.name.substring(0, 1).toUpperCase(),
+                      style: const TextStyle(fontSize: 30, color: purple)))),
+          const SizedBox(height: 12),
+          Text(p.name,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  fontSize: 21, fontWeight: FontWeight.bold, color: ink)),
+          const SizedBox(height: 5),
+          Text(p.targetRole,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: muted)),
+          const SizedBox(height: 26),
+          SoftCard(
+              padding: EdgeInsets.zero,
+              child: Material(
+                  color: Colors.transparent,
+                  child: Column(children: [
+                    ListTile(
+                        leading: const Icon(Icons.explore_outlined),
+                        title: const Text('Minha jornada'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () =>
+                            open('Minha jornada', const JourneyScreen())),
+                    ListTile(
+                        leading: const Icon(Icons.description_outlined),
+                        title: const Text('Meu currículo e certificados'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const ResumeBuilderScreen()))),
+                    ListTile(
+                        leading: const Icon(Icons.work_outline),
+                        title: const Text('Oportunidades'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => open('Oportunidades', const JobsScreen())),
+                    ListTile(
+                        leading: const Icon(Icons.chat_bubble_outline),
+                        title: const Text('Meu assistente'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () =>
+                            open('Assistente', const AssistantScreen())),
+                    ListTile(
+                        leading: const Icon(Icons.tune),
+                        title: const Text('Editar perfil e competências'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () =>
+                            open('Meu perfil', const ProfileDetailsScreen())),
+                  ]))),
+          const SizedBox(height: 30),
+          const Center(child: BrandLogo()),
+          const SizedBox(height: 12),
+          const Text('Mais que vagas, novos horizontes.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: muted, fontSize: 12))
+        ]));
   }
 }

@@ -5,7 +5,8 @@ import '../services/app_controller.dart';
 import '../widgets/ui.dart';
 import 'home_screen.dart';
 import 'journey_screen.dart';
-import 'assistant_screen.dart';
+import 'resume_overview_screen.dart';
+import '../widgets/brand.dart';
 import 'jobs_screen.dart';
 import 'profile_screen.dart';
 
@@ -32,8 +33,8 @@ class _AppShellState extends State<AppShell> {
     final pages = [
       HomeScreen(onNavigate: go),
       const JourneyScreen(),
-      const AssistantScreen(),
       const JobsScreen(),
+      const ResumeOverviewScreen(),
       const ProfileScreen(),
     ];
 
@@ -73,7 +74,7 @@ class _AppShellState extends State<AppShell> {
                       : NavigationRailLabelType.all,
                   leading: const Padding(
                     padding: EdgeInsets.all(16),
-                    child: Icon(Icons.spa_rounded, color: purple, size: 32),
+                    child: BrandLogo(compact: true),
                   ),
                   destinations: const [
                     NavigationRailDestination(
@@ -82,15 +83,15 @@ class _AppShellState extends State<AppShell> {
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.menu_book_rounded),
-                      label: Text('Trilhas'),
+                      label: Text('Jornada'),
                     ),
                     NavigationRailDestination(
-                      icon: Icon(Icons.chat_bubble_outline_rounded),
-                      label: Text('Assistente'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.search_rounded),
+                      icon: Icon(Icons.work_outline_rounded),
                       label: Text('Vagas'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.description_outlined),
+                      label: Text('Currículo'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.person_outline_rounded),
@@ -118,9 +119,9 @@ class _BottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     const items = [
       (Icons.home_rounded, 'Início'),
-      (Icons.menu_book_rounded, 'Trilhas'),
-      (Icons.chat_bubble_outline_rounded, 'Assistente'),
-      (Icons.search_rounded, 'Vagas'),
+      (Icons.explore_outlined, 'Jornada'),
+      (Icons.work_outline_rounded, 'Vagas'),
+      (Icons.description_outlined, 'Currículo'),
       (Icons.person_outline_rounded, 'Perfil'),
     ];
     return Container(

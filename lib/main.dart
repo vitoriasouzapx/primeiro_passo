@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'services/app_controller.dart';
-import 'screens/app_shell.dart';
+import 'screens/welcome_screen.dart';
 import 'widgets/ui.dart';
 
 void main() {
@@ -25,6 +25,17 @@ class PrimeiroPassoApp extends StatelessWidget {
       title: 'Primeiro Passo',
       theme: ThemeData(
         useMaterial3: true,
+        filledButtonTheme: FilledButtonThemeData(
+            style: FilledButton.styleFrom(
+                minimumSize: const Size(0, 48),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)))),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+                minimumSize: const Size(0, 48),
+                side: const BorderSide(color: purple),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)))),
         fontFamily: 'Roboto',
         scaffoldBackgroundColor: bg,
         colorScheme: ColorScheme.fromSeed(
@@ -53,7 +64,7 @@ class PrimeiroPassoApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const AppShell(),
+      home: const WelcomeScreen(),
     );
   }
 }

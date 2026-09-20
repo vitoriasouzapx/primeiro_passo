@@ -80,7 +80,7 @@ class JourneyScreen extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 24),
         children: [
           const ScreenHeader(
-            title: 'Trilhas',
+            title: 'Jornada',
             subtitle:
                 'Sua posição é calculada automaticamente a partir das suas ações e dados.',
           ),

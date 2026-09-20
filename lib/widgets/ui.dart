@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-const Color purple = Color(0xFF6C35E8);
-const Color purpleDark = Color(0xFF3E208C);
-const Color purpleSoft = Color(0xFFF1EBFF);
-const Color blue = Color(0xFF4DA3FF);
+const Color purple = Color(0xFF3548FF);
+const Color purpleDark = Color(0xFF18244A);
+const Color purpleSoft = Color(0xFFEEF0FF);
+const Color blue = Color(0xFF4986FF);
 const Color blueSoft = Color(0xFFEAF4FF);
-const Color green = Color(0xFF39C99B);
+const Color green = Color(0xFF1597A6);
 const Color greenSoft = Color(0xFFE7FAF3);
 const Color orange = Color(0xFFF68B45);
 const Color orangeSoft = Color(0xFFFFF0E6);
 const Color pink = Color(0xFFE95684);
 const Color pinkSoft = Color(0xFFFFEAF1);
-const Color ink = Color(0xFF17203A);
-const Color muted = Color(0xFF71809F);
-const Color bg = Color(0xFFF3F5FB);
-const Color line = Color(0xFFE7EAF2);
+const Color ink = Color(0xFF101A33);
+const Color muted = Color(0xFF626F91);
+const Color bg = Color(0xFFF5F7FC);
+const Color line = Color(0xFFE8ECF6);
 
 class AppSurface extends StatelessWidget {
   final Widget child;

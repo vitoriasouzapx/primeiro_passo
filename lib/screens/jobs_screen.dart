@@ -34,7 +34,7 @@ class _JobsScreenState extends State<JobsScreen> {
         padding: const EdgeInsets.only(bottom: 24),
         children: [
           ScreenHeader(
-            title: 'Vagas',
+            title: 'Oportunidades',
             subtitle: 'Oportunidades alinhadas ao seu perfil.',
             trailing: widget.standalone
                 ? IconButton(

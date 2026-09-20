@@ -30,14 +30,22 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.text('Começar'), 250,
+          scrollable: find.byType(Scrollable).first);
+      await tester.tap(find.text('Começar'));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.text('Explorar protótipo'), 250,
+          scrollable: find.byType(Scrollable).last);
+      await tester.tap(find.text('Explorar protótipo'));
+      await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(
         find.byType(NavigationRail),
         size.width >= 760 && size.height >= 480 ? findsOneWidget : findsNothing,
       );
       for (final label in [
-        'Trilhas',
-        'Assistente',
+        'Jornada',
+        'Currículo',
         'Vagas',
         'Perfil',
         'Início',
