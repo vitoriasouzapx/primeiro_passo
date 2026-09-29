@@ -1,4 +1,10 @@
+import 'discovery.dart';
+
 class UserProfile {
+  Map<String, List<String>> discovery;
+  List<ChatMessage> conversation;
+  bool discoveryGoalConfirmed;
+
   Map<String, dynamic> resume;
   Map<String, String> journeyNotes;
   List<String> journeyActivities;
@@ -26,6 +32,9 @@ class UserProfile {
   String currentRole;
 
   UserProfile({
+    Map<String, List<String>>? discovery,
+    List<ChatMessage>? conversation,
+    this.discoveryGoalConfirmed = false,
     Map<String, dynamic>? resume,
     Map<String, String>? journeyNotes,
     List<String>? journeyActivities,
@@ -51,7 +60,9 @@ class UserProfile {
     this.education = '',
     this.professionalSummary = '',
     this.currentRole = '',
-  })  : resume = resume ?? {},
+  })  : discovery = discovery ?? {},
+        conversation = conversation ?? [],
+        resume = resume ?? {},
         journeyNotes = journeyNotes ?? {},
         journeyActivities = journeyActivities ?? [],
         skills = skills ??
@@ -80,6 +91,9 @@ class UserProfile {
         languages = languages ?? [];
 
   Map<String, dynamic> toMap() => {
+        'discovery': discovery,
+        'discoveryGoalConfirmed': discoveryGoalConfirmed,
+        'conversation': conversation.map((m) => m.toMap()).toList(),
         'resume': resume,
         'journeyNotes': journeyNotes,
         'journeyActivities': journeyActivities,
@@ -107,6 +121,12 @@ class UserProfile {
         'currentRole': currentRole,
       };
   factory UserProfile.fromMap(Map<String, dynamic> m) => UserProfile(
+        discovery: (m['discovery'] as Map? ?? {})
+            .map((k, v) => MapEntry(k as String, List<String>.from(v))),
+        discoveryGoalConfirmed: m['discoveryGoalConfirmed'] == true,
+        conversation: (m['conversation'] as List? ?? [])
+            .map((x) => ChatMessage.fromMap(Map<String, dynamic>.from(x)))
+            .toList(),
         resume: Map<String, dynamic>.from(m['resume'] ?? {}),
         journeyNotes: Map<String, String>.from(m['journeyNotes'] ?? {}),
         journeyActivities: List<String>.from(m['journeyActivities'] ?? []),

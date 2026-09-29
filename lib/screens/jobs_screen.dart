@@ -27,7 +27,12 @@ class _JobsScreenState extends State<JobsScreen> {
           ('${job.title} ${job.company} ${job.location} ${job.requirements.keys.join(' ')}')
               .toLowerCase()
               .contains(query.trim().toLowerCase()),
-    );
+    ).toList();
+    if (p.discoveryGoalConfirmed && p.targetRole.isNotEmpty && query.isEmpty) {
+      final words = p.targetRole.toLowerCase().split(' ').where((w) => w.length > 3);
+      int relevance(String title) => words.where((w) => title.toLowerCase().contains(w)).length;
+      visibleJobs.sort((a,b) => relevance(b.title).compareTo(relevance(a.title)));
+    }
     final content = SafeArea(
       bottom: false,
       child: ListView(
@@ -35,7 +40,7 @@ class _JobsScreenState extends State<JobsScreen> {
         children: [
           ScreenHeader(
             title: 'Oportunidades',
-            subtitle: 'Oportunidades alinhadas ao seu perfil.',
+            subtitle: p.discoveryGoalConfirmed ? 'Objetivo: ${p.targetRole}. Priorizamos títulos relacionados, mantendo todas as vagas.' : 'Explore oportunidades e escolha uma direção.',
             trailing: widget.standalone
                 ? IconButton(
                     tooltip: 'Voltar',

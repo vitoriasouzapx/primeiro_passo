@@ -43,11 +43,38 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         await cloud.login(email.text.trim(), password.text);
       }
+      await context.read<AppController>().enterAccount();
       if (mounted) enter();
     } catch (_) {
+      await cloud.logout();
       if (mounted)
         setState(() => message =
             'Não foi possível acessar a conta. Confira os dados e tente novamente.');
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  Future<void> resetPassword() async {
+    final cloud = context.read<AppController>().cloud;
+    if (cloud == null) {
+      setState(() => message = 'O acesso com conta ainda não foi ativado.');
+      return;
+    }
+    if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email.text.trim())) {
+      setState(() => message = 'Informe seu e-mail para recuperar a senha.');
+      return;
+    }
+    setState(() => busy = true);
+    try {
+      await cloud.resetPassword(email.text.trim());
+      if (mounted)
+        setState(() => message =
+            'Se houver uma conta para este e-mail, você receberá as orientações.');
+    } catch (_) {
+      if (mounted)
+        setState(() => message =
+            'Não foi possível solicitar a recuperação. Tente novamente.');
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -146,10 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Align(
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
-                                      onPressed: busy
-                                          ? null
-                                          : () => setState(() => message =
-                                              'A recuperação de senha estará disponível quando o acesso com conta for ativado.'),
+                                      onPressed: busy ? null : resetPassword,
                                       child:
                                           const Text('Esqueci minha senha'))),
                               if (message != null)
@@ -202,7 +226,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                       : 'Ainda não tem uma conta? Criar conta')),
                               const Divider(),
                               TextButton(
-                                  onPressed: busy ? null : enter,
+                                  onPressed: busy
+                                      ? null
+                                      : () async {
+                                          await context
+                                              .read<AppController>()
+                                              .leaveAccount();
+                                          if (mounted) enter();
+                                        },
                                   child: const Text('Explorar protótipo')),
                               const Text(
                                   'Experimente sem conta. As informações ficam neste dispositivo.',

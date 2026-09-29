@@ -51,7 +51,7 @@ class JobsTests(unittest.TestCase):
         self.assertEqual(self.client.get('/health').status_code, 200)
         result = self.client.get('/jobs', headers={'Origin': 'http://localhost:5300'})
         self.assertEqual(result.headers['access-control-allow-origin'], 'http://localhost:5300')
-        self.assertEqual(self.client.post('/chat', json={'message': 'oi', 'profile': {}}).status_code, 503)
+        self.assertEqual(self.client.post('/chat', json={'message': 'oi'}).status_code, 401)
 
 
 if __name__ == '__main__':

@@ -13,6 +13,8 @@ class CloudService {
   Future<UserCredential> login(String email, String password) =>
       FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+  Future<String?> token() async => FirebaseAuth.instance.currentUser?.getIdToken();
+  Future<void> resetPassword(String email) => FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   Future<void> logout() => FirebaseAuth.instance.signOut();
 
   Future<void> save(UserProfile p) async {
@@ -20,7 +22,7 @@ class CloudService {
     await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
-        .set(p.toMap(), SetOptions(merge: true));
+        .set(p.toMap());
   }
 
   Future<UserProfile?> load() async {

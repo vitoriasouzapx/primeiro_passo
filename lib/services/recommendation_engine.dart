@@ -16,7 +16,10 @@ class RecommendationEngine {
     return 'Descoberta';
   }
 
-  Map<String, double> requirements(UserProfile u) => u.targetJobId.isNotEmpty
+  Map<String, double> requirements(UserProfile u) {
+    if (u.discoveryGoalConfirmed && u.targetJobId.isEmpty && !jobs.any((j) => j.title == u.targetRole)) return {};
+    if (u.targetRole.isEmpty) return {};
+    return u.targetJobId.isNotEmpty
       ? u.targetRequirements
       : jobs
           .firstWhere(
@@ -24,6 +27,7 @@ class RecommendationEngine {
             orElse: () => jobs.first,
           )
           .requirements;
+  }
   Map<String, double> skillGaps(UserProfile u) {
     final gaps = <String, double>{};
     requirements(u).forEach((k, req) {
@@ -35,7 +39,7 @@ class RecommendationEngine {
 
   double compatibility(UserProfile u) {
     final req = requirements(u);
-    if (req.isEmpty) return u.targetJobId.isEmpty ? 1 : 0;
+    if (req.isEmpty) return 0;
     double score = 0;
     req.forEach((k, v) =>
         score += (v <= 0 ? 1.0 : ((u.skills[k] ?? 0) / v).clamp(0, 1)));
@@ -62,7 +66,7 @@ class RecommendationEngine {
           90,
         ),
       );
-    if (u.applications.isEmpty && compatibility(u) >= .8)
+    if (requirements(u).isNotEmpty && u.applications.isEmpty && compatibility(u) >= .8)
       r.add(
         Recommendation(
           'Começar candidaturas',

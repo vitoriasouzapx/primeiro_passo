@@ -4,12 +4,14 @@ import 'package:provider/provider.dart';
 import 'services/app_controller.dart';
 import 'screens/welcome_screen.dart';
 import 'widgets/ui.dart';
+import 'services/firebase_setup.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final cloud = await configuredCloud();
   runApp(
     ChangeNotifierProvider(
-      create: (_) => AppController()..init(),
+      create: (_) => AppController(cloud: cloud)..init(),
       child: const PrimeiroPassoApp(),
     ),
   );
