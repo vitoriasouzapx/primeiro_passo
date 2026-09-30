@@ -1,4 +1,6 @@
 import 'jobs_repository.dart';
+import '../models/discovery.dart';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
@@ -15,6 +17,8 @@ class AppController extends ChangeNotifier {
   final CloudService? cloud;
   UserProfile profile = UserProfile();
   bool loading = true;
+  String? syncError;
+  bool cloudReady = false;
   final JobsRepository jobsRepository;
   List<JobItem> availableJobs = [];
   bool jobsLoading = false;
@@ -39,6 +43,7 @@ class AppController extends ChangeNotifier {
   }
 
   Future<void> selectJob(JobItem job) async {
+    profile.discoveryGoalConfirmed = true;
     profile.targetRole = job.title;
     profile.targetJobId = job.id;
     profile.targetRequirements = Map.of(job.requirements);
@@ -47,7 +52,17 @@ class AppController extends ChangeNotifier {
   }
 
   Future<void> init() async {
+    local.userId = cloud?.uid;
     profile = await local.load();
+    if (cloud?.signedIn == true) {
+      try {
+        profile = await cloud!.load() ?? profile;
+        cloudReady = true;
+      } catch (_) {
+        syncError =
+            'Sem conexão com sua conta. Alterações serão salvas neste dispositivo.';
+      }
+    }
     profile.journeyStage = engine.stage(profile);
     loading = false;
     notifyListeners();
@@ -57,12 +72,116 @@ class AppController extends ChangeNotifier {
   Future<void> persist() async {
     profile.journeyStage = engine.stage(profile);
     await local.save(profile);
-    if (cloud?.signedIn == true) {
+    if (cloudReady && cloud?.signedIn == true) {
       try {
         await cloud!.save(profile);
-      } catch (_) {}
+        syncError = null;
+      } catch (_) {
+        syncError =
+            'Salvo neste dispositivo. Não foi possível sincronizar com sua conta.';
+      }
     }
     notifyListeners();
+  }
+
+  Future<void> enterAccount() async {
+    // Load before exposing the account; never upload the previous guest profile.
+    final next = await cloud!.load() ?? UserProfile();
+    cloudReady = true;
+    local.userId = cloud!.uid;
+    profile = next;
+    await local.save(profile);
+    syncError = null;
+    notifyListeners();
+  }
+
+  Future<void> leaveAccount() async {
+    await cloud?.logout();
+    cloudReady = false;
+    local.userId = null;
+    profile = await local.load();
+    syncError = null;
+    notifyListeners();
+  }
+
+  Map<String, dynamic> get discoveryContext => {
+        for (final k in [
+          'interests',
+          'experiences',
+          'preferences',
+          'focusSkills'
+        ])
+          k: profile.discovery[k] ?? <String>[],
+        'targetRole': profile.discoveryGoalConfirmed ? profile.targetRole : '',
+      };
+
+  Future<void> saveConversation(List<ChatMessage> messages) async {
+    profile.conversation = messages;
+    // Keep bounded history for the Firestore document; confirmed memories persist separately.
+    while (profile.conversation.length > 80 ||
+        profile.conversation.fold<int>(0, (n, m) => n + m.content.length) >
+            80000) {
+      profile.conversation.removeAt(0);
+    }
+    await persist();
+  }
+
+  Future<void> confirmSuggestion(ProfileSuggestion suggestion,
+      {String? replacing}) async {
+    if (!discoveryLabels.containsKey(suggestion.field))
+      throw ArgumentError('Campo desconhecido');
+    final before = UserProfile.fromMap(jsonDecode(jsonEncode(profile.toMap())));
+    try {
+      if (suggestion.field == 'targetRole') {
+        profile.targetRole = suggestion.value;
+        profile.discoveryGoalConfirmed = true;
+        profile.targetJobId = '';
+        profile.targetRequirements = {};
+      } else {
+        final values =
+            profile.discovery.putIfAbsent(suggestion.field, () => []);
+        if (replacing != null) values.remove(replacing);
+        if (values.length >= 20 && !values.contains(suggestion.value))
+          throw StateError('Limite de 20 registros');
+        if (!values.contains(suggestion.value)) values.add(suggestion.value);
+      }
+      dismissSuggestion(suggestion);
+      await persist();
+    } catch (_) {
+      profile = before;
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  void dismissSuggestion(ProfileSuggestion s) {
+    profile.conversation = profile.conversation
+        .map((m) => ChatMessage(
+            m.role,
+            m.content,
+            m.suggestions
+                .where((x) => x.field != s.field || x.value != s.value)
+                .toList()))
+        .toList();
+  }
+
+  Future<void> removeMemory(String field, String value) async {
+    final before = UserProfile.fromMap(jsonDecode(jsonEncode(profile.toMap())));
+    try {
+      if (field == 'targetRole') {
+        profile.targetRole = '';
+        profile.targetJobId = '';
+        profile.targetRequirements = {};
+        profile.discoveryGoalConfirmed = false;
+      } else {
+        profile.discovery[field]?.remove(value);
+      }
+      await persist();
+    } catch (_) {
+      profile = before;
+      notifyListeners();
+      rethrow;
+    }
   }
 
   void addEvent(String type, [Map<String, dynamic>? data]) => profile.events
@@ -70,14 +189,22 @@ class AppController extends ChangeNotifier {
   double compatibility() => engine.compatibility(profile);
   Map<String, double> gaps() => engine.skillGaps(profile);
   List<CourseItem> recommendedCourses() {
-    final g = gaps().keys.toSet();
+    final chosen = (profile.discovery['focusSkills'] ?? [])
+        .map((s) => s.toLowerCase())
+        .toSet();
+    final g = {...gaps().keys.map((s) => s.toLowerCase()), ...chosen};
     final list = courseCatalog
         .where(
           (c) =>
-              g.contains(c.skill) && !profile.completedCourses.contains(c.id),
+              g.contains(c.skill.toLowerCase()) &&
+              !profile.completedCourses.contains(c.id),
         )
         .toList();
-    return list.isNotEmpty
+    list.sort((a, b) => (chosen.contains(b.skill.toLowerCase()) ? 1 : 0)
+        .compareTo(chosen.contains(a.skill.toLowerCase()) ? 1 : 0));
+    return list.isNotEmpty ||
+            profile.discoveryGoalConfirmed ||
+            chosen.isNotEmpty
         ? list
         : courseCatalog
             .where((c) => !profile.completedCourses.contains(c.id))
@@ -88,6 +215,15 @@ class AppController extends ChangeNotifier {
     final p = profile;
     switch (id) {
       case 'discovery':
+        if (profile.discovery.isNotEmpty || profile.discoveryGoalConfirmed) {
+          return [
+                profile.discoveryGoalConfirmed,
+                (profile.discovery['interests'] ?? []).isNotEmpty,
+                (profile.discovery['experiences'] ?? []).isNotEmpty,
+                (profile.discovery['preferences'] ?? []).isNotEmpty
+              ].where((x) => x).length /
+              4;
+        }
         return ([
                   p.targetRole.isNotEmpty,
                   p.viewedJobs.length >= 2,
@@ -100,15 +236,17 @@ class AppController extends ChangeNotifier {
         final req = engine.requirements(p);
         final met =
             req.entries.where((e) => (p.skills[e.key] ?? 0) >= e.value).length;
-        return req.isEmpty
-            ? (p.targetJobId.isEmpty ? 1 : 0)
-            : (met / req.length).clamp(0, 1);
+        return req.isEmpty ? 0 : (met / req.length).clamp(0, 1);
       case 'resume':
         return ([
                   p.professionalSummary.isNotEmpty,
-                  p.education.isNotEmpty || (p.resume['education'] as List? ?? []).isNotEmpty,
-                  p.completedCourses.isNotEmpty || (p.resume['courses'] as List? ?? []).isNotEmpty,
-                  p.skills.isNotEmpty || (p.resume['technical'] as List? ?? []).isNotEmpty || (p.resume['behavioral'] as List? ?? []).isNotEmpty,
+                  p.education.isNotEmpty ||
+                      (p.resume['education'] as List? ?? []).isNotEmpty,
+                  p.completedCourses.isNotEmpty ||
+                      (p.resume['courses'] as List? ?? []).isNotEmpty,
+                  p.skills.isNotEmpty ||
+                      (p.resume['technical'] as List? ?? []).isNotEmpty ||
+                      (p.resume['behavioral'] as List? ?? []).isNotEmpty,
                   p.targetRole.isNotEmpty,
                 ].where((x) => x).length /
                 5)
@@ -158,12 +296,14 @@ class AppController extends ChangeNotifier {
   Future<void> setTargetRole(String title) async {
     profile.targetJobId = '';
     profile.targetRequirements = {};
+    profile.discoveryGoalConfirmed = true;
     profile.targetRole = title;
     addEvent('target_role_changed', {'role': title});
     await persist();
   }
 
   Future<void> completeCourse(CourseItem course) async {
+    if (profile.completedCourses.contains(course.id)) return;
     if (!profile.completedCourses.contains(course.id))
       profile.completedCourses.add(course.id);
     if (!profile.certificates.contains(course.title))

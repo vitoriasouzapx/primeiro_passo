@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:primeiro_passo/services/app_controller.dart';
 import 'package:primeiro_passo/screens/journey_screen.dart';
-import 'package:primeiro_passo/screens/journey_topic_screen.dart';
+import 'package:primeiro_passo/screens/discovery_screen.dart';
 import 'package:primeiro_passo/screens/home_screen.dart';
 import 'package:primeiro_passo/models/user_profile.dart';
 
@@ -32,8 +32,8 @@ void main() {
   });
 
   const routes = {
-    '1. Descoberta': 'Interesses e rotina de trabalho',
-    '2. Capacitação': 'Lacunas detectadas automaticamente',
+    '1. Descoberta': 'Seu próximo passo começa com uma conversa.',
+    '2. Capacitação': 'Seu foco de aprendizagem',
     '3. Currículo inteligente': 'Meu currículo',
     '4. Busca e seleção': 'Faça uma busca com critérios',
     '5. Entrada e adaptação': 'Antes do primeiro dia',
@@ -71,8 +71,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('1. Descoberta'));
     await tester.pumpAndSettle();
-    expect(find.byType(JourneyTopicScreen), findsOneWidget);
-    expect(find.text('Interesses e rotina de trabalho'), findsOneWidget);
+    expect(find.byType(DiscoveryScreen), findsOneWidget);
+    expect(find.text('Seu próximo passo começa com uma conversa.'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     c.dispose();

@@ -43,16 +43,18 @@ class TrainingHubScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Lacunas detectadas automaticamente',
+                            'Seu foco de aprendizagem',
                             style: TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 16,
                             ),
                           ),
                           const SizedBox(height: 9),
+                          if ((controller.profile.discovery['focusSkills'] ?? []).isNotEmpty)
+                            Text('Você escolheu explorar: ${controller.profile.discovery['focusSkills']!.join(', ')}. Isso orienta os cursos, sem alterar suas notas de competência.'),
                           if (gaps.isEmpty)
                             const Text(
-                              'Você atende aos requisitos mapeados da vaga-alvo.',
+                              'Não há lacunas mapeadas. Isso não comprova domínio dos requisitos.',
                               style: TextStyle(color: muted),
                             )
                           else
@@ -94,7 +96,7 @@ class TrainingHubScreen extends StatelessWidget {
                     if (courses.isEmpty)
                       const SoftCard(
                         child: Text(
-                          'Nenhum curso pendente para as lacunas atuais.',
+                          'Nenhum curso pendente do catálogo corresponde ao foco atual. Você pode explorar outro tema na Descoberta.',
                           style: TextStyle(color: muted),
                         ),
                       )

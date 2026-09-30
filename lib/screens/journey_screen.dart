@@ -82,7 +82,7 @@ class JourneyScreen extends StatelessWidget {
           const ScreenHeader(
             title: 'Jornada',
             subtitle:
-                'Sua posição é calculada automaticamente a partir das suas ações e dados.',
+                'Seu mapa confirmado e suas atividades orientam os próximos passos.',
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -103,7 +103,7 @@ class JourneyScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 7),
                       const Text(
-                        'Sem aulas e sem pedir que você estime seu próprio progresso. Cursos, currículo, vagas, candidaturas e contratação movimentam a jornada.',
+                        'Converse na Descoberta e revise seu mapa. O objetivo escolhido orienta as vagas; os temas que deseja aprender ajudam a priorizar cursos. Nenhuma sugestão muda seu perfil sem confirmação.',
                         style: TextStyle(color: muted, height: 1.4),
                       ),
                       const SizedBox(height: 12),

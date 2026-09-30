@@ -72,3 +72,8 @@ flutter test
 ```
 
 Os testes responsivos exercitam as cinco abas em 320×700, 390×844, 844×390, 800×1000 e 1440×900. Isso não substitui testes em aparelhos físicos, Safari/iOS ou diferentes versões de sistema.
+
+## Descoberta com conversa e memória
+
+Veja [DESCOBERTA_IA.md](DESCOBERTA_IA.md) para conhecer a nova integração, testar sem API e configurar contas e IA depois.
+

@@ -1,0 +1,8 @@
+{
+  "AI_BACKEND_URL": "https://SEU-SERVIDOR",
+  "FIREBASE_API_KEY": "configuracao-publica-do-firebase",
+  "FIREBASE_APP_ID": "app-id-web",
+  "FIREBASE_PROJECT_ID": "projeto-firebase",
+  "FIREBASE_MESSAGING_SENDER_ID": "sender-id",
+  "FIREBASE_AUTH_DOMAIN": "projeto-firebase.firebaseapp.com"
+}

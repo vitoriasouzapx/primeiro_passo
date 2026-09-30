@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import '../data/journey_topics.dart';
 import 'journey_topic_screen.dart';
+import 'discovery_screen.dart';
 import 'training_hub_screen.dart';
 import 'resume_builder_screen.dart';
 
 /// One destination for each stage, shared by Home and Journey.
 void openJourneyStage(BuildContext context, String id) {
   final Widget screen = switch (id) {
-    'discovery' => const JourneyTopicScreen(topic: discoveryTopic),
+    'discovery' => const DiscoveryScreen(),
     'training' => const TrainingHubScreen(),
     'resume' => const ResumeBuilderScreen(),
     'search' => const JourneyTopicScreen(topic: searchTopic),

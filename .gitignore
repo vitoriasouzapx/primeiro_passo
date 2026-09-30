@@ -6,3 +6,5 @@ backend/data/
 __pycache__/
 *.pyc
 .env
+firebase/*.local.json
+**/*service-account*.json
